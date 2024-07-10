@@ -1,0 +1,123 @@
+
+// import React from "react";
+
+// const CalendarTable = () => {
+//   // Example data structure
+//   const data = [
+//     { column: 1, Item1: "a", Item2: 2, Item3: 3 },
+//     { column: 2, Item1: 4, Item2: 5, Item3: 6 },
+//     { column: 3, Item1: 7, Item2: 8, Item3: 9 },
+//   ];
+
+//   // Collect all unique Item and column labels
+//   const ItemLabels = ["Item1", "Item2", "Item3"];
+//   const columnLabels = [1, 2, 3]; // Assuming these are the column values
+
+//   // Create an empty matrix to hold values
+//   const matrix = ItemLabels.map((Item) => {
+//     return columnLabels.map((col) => {
+//       const ItemData = data.find((item) => item.column === col);
+//       return ItemData ? ItemData[Item] : null;
+//     });
+//   });
+
+//   // Generate table headers (columns)
+//   const headers = columnLabels.map((column) => (
+//     <th key={column}>Column {column}</th>
+//   ));
+
+//   // Generate table Items
+//   const Items = ItemLabels.map((ItemLabel, ItemIndex) => (
+//     <tr key={ItemLabel}>
+//       <th>{ItemLabel}</th>
+//       {matrix[ItemIndex].map((value, colIndex) => (
+//         <td key={`${ItemLabel}-${columnLabels[colIndex]}`}>
+//           {value !== undefined ? value : ""}
+//         </td>
+//       ))}
+//     </tr>
+//   ));
+
+//   return (
+//     <table>
+//       <thead>
+//         <tr>
+//           <th></th>
+//           {headers}
+//         </tr>
+//       </thead>
+//       <tbody>{Items}</tbody>
+//     </table>
+//   );
+// };
+
+// export default CalendarTable;
+
+
+
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+import React from "react";
+
+const CalendarTable = () => {
+  // Example data structure
+  const data = [
+    { column: 1, Item1: "a", Item2: "b", Item3: "c" },
+    { column: 2, Item1: "d", Item2: "e", Item3: "f" },
+    { column: 3, Item1: "g", Item2: "h", Item3: "i" },
+  ];
+
+  // Collect all unique Item and column labels
+  const ItemLabels = ["Item1", "Item2", "Item3"];
+  const columnLabels = [1, 2, 3]; // Assuming these are the column values
+
+  // Generate table Items with borders
+  const Items = ItemLabels.map((ItemLabel, ItemIndex) => (
+    <tr key={ItemLabel}>
+      <th style={styles.headerCell}>{ItemLabel}</th>
+      {columnLabels.map((col) => {
+        const cellValue = data.find((item) => item.column === col)[ItemLabel];
+        return (
+          <td key={`${ItemLabel}-${col}`} style={styles.dataCell}>
+            {cellValue}
+          </td>
+        );
+      })}
+    </tr>
+  ));
+
+  return (
+    <table style={styles.table}>
+      <thead>
+        <tr>
+          <th style={styles.headerCell}></th>
+          {columnLabels.map((column) => (
+            <th key={`Column-${column}`} style={styles.headerCell}>
+              Column {column}
+            </th>
+          ))}
+        </tr>
+      </thead>
+      <tbody>{Items}</tbody>
+    </table>
+  );
+};
+
+const styles = {
+  table: {
+    borderCollapse: "collapse",
+    width: "100%",
+  },
+  headerCell: {
+    border: "1px solid black",
+    padding: "8px",
+    textAlign: "center",
+    backgroundColor: "#f2f2f2",
+  },
+  dataCell: {
+    border: "1px solid black",
+    padding: "8px",
+    textAlign: "center",
+  },
+};
+
+export default CalendarTable;
