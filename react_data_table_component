@@ -1,0 +1,258 @@
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import DataTable from 'react-data-table-component';
+import DataTableExtensions from 'react-data-table-component-extensions';
+import { FaArrowUp, FaPenSquare, FaTrash } from 'react-icons/fa';
+import { CircleSpinner } from "react-spinners-kit";
+
+function Form1() {
+    const cols = [
+        {
+            name: "roll_no",
+            selector: (row) => row.id,
+            cellExport: row => row.name,
+            //maxWidth:"0px"   //20px
+            width:"80px",
+           // wrap: true
+           right:true,
+           reorder:true
+           
+            
+        },
+        {
+            name: "name",
+            selector: (row) => row.name,
+            cellExport: row => row.name,
+            sortable:true,
+            wrap: true,
+            width:"200px"
+           
+        },
+        {
+            name: "email",
+            selector: (row) => row.email,
+            width:"200px",
+            sortable:true
+        },
+        {
+            name: "update",
+            width:"80px",
+            cell: (row) => (
+                <button className='bg-blue-950 p-2 text-white rounded-md' onClick={() => modify(row)}><FaPenSquare/></button>
+               
+            ),
+        },
+        {
+            name: "delete",
+            width:"80px",
+            cell: (row) => (
+                <button className='bg-blue-950 p-2 text-white' onClick={() => del(row)}><FaTrash/></button>
+            ),
+            
+        },
+    ];
+
+    const [data, setData] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        axios.get('https://jsonplaceholder.typicode.com/comments')
+        .then((response) => {
+            console.log(response);
+            setData(response.data);
+            setLoading(false); // Set loading to false when data is fetched
+            
+        });
+    }, []);
+
+    const customStyle = {                                                 // for pagination also 
+        rows: {
+            style: {
+                fontSize: '20px',
+                backgroundColor: 'blue',
+                // width:"885px"  // 840px    +45px for checked box // 840+45 => 885
+            },
+        },
+        headCells: {
+            style: {
+                backgroundColor: 'blue',
+                color: 'white',
+                fontSize:"20px"
+            },
+        },
+        cells: {
+            style: {
+                borderStyle: 'solid',
+                borderColor: 'yellow',
+                borderWidth: '4px',
+                
+            },
+        },
+    };
+
+    
+    const p=({selectedRows})=>{
+        console.log({selectedRows});
+    }
+
+    const conditionalRowStyles = [
+        {
+          when: row => row.id< 100,
+          style: {
+            backgroundColor: 'green',
+            color: 'white',
+          },
+        },
+      ];
+
+      const table={
+        cols,
+        data
+      }
+
+    return (
+        <div>
+            
+            <DataTableExtensions {...table}> 
+        <div style={{ width: '707px', overflowX: 'auto',marginLeft:"400px" }}>
+       
+            <DataTable
+            title="Movie List"
+                columns={cols}
+                data={data}
+                customStyles={customStyle}
+                className='container mx-auto d'
+                progressPending={loading}
+                progressComponent={<CircleSpinner size={30} color="blue" />}
+                fixedHeader
+                defaultSortFieldId={2}
+                selectableRows
+                onSelectedRowsChange={p}
+                sortIcon={<FaArrowUp/>}
+                pagination
+                paginationRowsPerPageOptions={[10,30,50,100,150]}
+                highlightOnHover
+                conditionalRowStyles={conditionalRowStyles}
+                theme="dark"
+                expandableRows
+                striped
+                // paginationIconFirstPage={<FaArrowUp/>}
+                
+       
+                
+            />
+            
+        </div>
+        </DataTableExtensions>
+    </div>
+    );
+}
+
+export default Form1;
+
+
+
+//-------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import DataTable from 'react-data-table-component';
+import { ImAddressBook } from "react-icons/im";
+import { useNavigate } from 'react-router-dom';
+
+
+
+function Create() {
+
+  const [data,setData]=useState();
+
+  const navigate=useNavigate();
+
+  useEffect(()=>{
+     axios.get("http://localhost:8080/api/getAll")
+     .then(res=>setData(res.data))
+  },[])
+
+
+  const handleLinkClick=(row)=>{
+    navigate("/go",{state:{data:row}})
+  }
+
+  const columns=[
+    {
+      name:"stu_id",
+      selector:(row)=>row.stuId
+    },
+    {
+      name:"stu_name",
+      center:'true',
+      wrap:'true',
+      // selector:(row)=>row.stuName,
+      
+      cell: (row) => {
+        if (row.stuName === "apple") {
+          return (
+            // <Link to="/details">Opened</Link>
+            <span onClick={()=>handleLinkClick(row)}>
+               Opened
+            </span>
+          );
+        } else {
+          return row.stuName;
+        }
+      },
+      conditionalCellStyles: [
+        {
+          when: (row) => row.stuName==="moni",
+          style: { backgroundColor: "blue" ,
+          borderRadius:"15px",
+        },
+        },
+      ],
+
+
+    },
+    {
+      name:"stu_marks",
+      selector:(row)=>row.stuMarks
+    },
+    {
+      name: "stu_doj",
+      cell: (row) => (
+        <div className="">
+          <ImAddressBook />
+          {row.doj}
+        </div>
+      )
+    }
+    
+  ]
+
+
+  return (
+    <div>
+      <DataTable columns={columns} data={data} />
+    </div>
+  )
+}
+
+export default Create
+
+
+
+
+
+
+
+    const tableData=[
+        {
+            rollNo: 1,
+            name: "murali",
+            city: "patna",
+            subject: "science",
+            mobNo: 76439,
+            marks: 400
+        }
+    ]
